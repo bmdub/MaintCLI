@@ -1,0 +1,389 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MaintCLI</name>
+    </assembly>
+    <members>
+        <member name="T:MaintCliNS.CallbackLogger">
+            <summary>
+            This class is simply used by the CLI to capture log messages from Microsoft's web host, exposing them to the user.
+            </summary>
+        </member>
+        <member name="T:MaintCliNS.CallbackLoggerProvider">
+            <summary>
+            This class is simply used by the CLI to capture log messages from Microsoft's web host, exposing them to the user.
+            </summary>
+        </member>
+        <member name="T:MaintCliNS.Client">
+            <summary>
+            Represents the state of a client connection at a certain point in time.
+            </summary>
+        </member>
+        <member name="P:MaintCliNS.Client.LoginTime">
+            <summary>Represents the time, in UTC, when the connection was established.</summary>
+        </member>
+        <member name="P:MaintCliNS.Client.LastActivityTime">
+            <summary>Represents the time, in UTC, when the client last issued a command.</summary>
+        </member>
+        <member name="P:MaintCliNS.Client.Username">
+            <summary>If authenticated, the username provided by the client.</summary>
+        </member>
+        <member name="P:MaintCliNS.Client.Authenticated">
+            <summary>Indicates whether or not the client's credentials have been authenticated.</summary>
+        </member>
+        <member name="T:MaintCliNS.ClientCache">
+            <summary>
+            This class is used to store client connections and manage authenticated sessions.
+            </summary>
+        </member>
+        <member name="T:MaintCliNS.Command">
+            <summary>
+            A command that is accessible via the CLI and served by the application.
+            </summary>
+        </member>
+        <member name="F:MaintCliNS.Command.Name">
+            <summary>The name of the command, as typed by the user.</summary>
+        </member>
+        <member name="F:MaintCliNS.Command.Help">
+            <summary>Describes what the command does.</summary>
+        </member>
+        <member name="F:MaintCliNS.Command.Example">
+            <summary>Provides an example of how the command can be run.</summary>
+        </member>
+        <member name="M:MaintCliNS.Command.ToString">
+            <summary>Returns the command/help/example as a formatted string.</summary>
+        </member>
+        <member name="T:MaintCliNS.CommandArguments">
+            <summary>
+            Contains all of the user's input arguments to a command.
+            </summary>
+        </member>
+        <member name="P:MaintCliNS.CommandArguments.Item(System.String)">
+            <summary>Gets the input argument or option value by name.</summary>
+            <param name="name">The name of the argument or option (without no leading dash).</param>
+            <returns>The string value of the argument, or null if there is no value.</returns>
+        </member>
+        <member name="M:MaintCliNS.CommandArguments.Add(System.String,System.String)">
+            <summary>Adds an argument+value to the collection of input arguments.</summary>
+            <param name="name">The name of the argument or option (without no leading dash).</param>
+            <param name="value">The value of the argument, or null.</param>
+        </member>
+        <member name="M:MaintCliNS.CommandArguments.TryGetValue(System.String,System.String@)">
+            <summary>Gets the input argument or option value by name.</summary>
+            <param name="name">The name of the argument or option (without no leading dash).</param>
+            <param name="value">The returned value of the argument, if any.</param>
+            <returns>True if the argument was entered.</returns>
+        </member>
+        <member name="M:MaintCliNS.CommandArguments.Contains(System.String)">
+            <summary>Returns whether or not the specified argument or option was specified.</summary>
+            <param name="name">The name of the argument or option (without no leading dash).</param>
+            <returns>True if the argument was entered.</returns>
+        </member>
+        <member name="T:MaintCliNS.CommandBuilder">
+            <summary>
+            Builds a command that is accessible via the CLI and served by the application.
+            </summary>
+        </member>
+        <member name="F:MaintCliNS.CommandBuilder.Name">
+            <summary>The name of the command, as typed by the user.</summary>
+        </member>
+        <member name="F:MaintCliNS.CommandBuilder.Help">
+            <summary>Describes what the command does.</summary>
+        </member>
+        <member name="F:MaintCliNS.CommandBuilder.Example">
+            <summary>Provides an example of how the command can be run.</summary>
+        </member>
+        <member name="M:MaintCliNS.CommandBuilder.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Builds a command that is accessible via the CLI and served by the application.
+            </summary>
+            <param name="name">The name of the argument, which can later be used by the application to retrieve the argument.</param>
+            <param name="help">Describes what the argument is used for.</param>
+            <param name="example">Provides an example of how the command can be run.</param>
+        </member>
+        <member name="M:MaintCliNS.CommandBuilder.AddOption(System.String,System.Boolean,System.String)">
+            <summary>Adds an optional argument to the command.</summary>
+            <param name="name">The name of the argument, which can later be used by the application to retrieve the argument.</param>
+            <param name="hasArgument">True if this option requires an argument.</param>
+            <param name="help">Describes what the argument is used for.</param>
+            <returns>The same modified instance of the command object.</returns>
+        </member>
+        <member name="M:MaintCliNS.CommandBuilder.AddArgument(System.String,System.String)">
+            <summary>Adds a required argument to the command.</summary>
+            <param name="name">The name of the argument, which can later be used by the application to retrieve the argument.</param>
+            <param name="help">Describes what the argument is used for.</param>
+            <returns>The same modified instance of the command object.</returns>
+        </member>
+        <member name="M:MaintCliNS.CommandBuilder.Execute(System.Action{MaintCliNS.Client,MaintCliNS.CommandArguments})">
+            <summary>Defines the action to execute to service the command after it is sent by a user.</summary>
+            <param name="action">The action delegate to execute, given a snapshot of the client state and the entered arguments.</param>
+            <returns>The same modified instance of the command object.</returns>
+        </member>
+        <member name="M:MaintCliNS.CommandBuilder.Build">
+            <summary>Builds a finalized command.</summary>
+            <returns>The command.</returns>
+        </member>
+        <member name="T:MaintCliNS.IClientRpc">
+            <summary>
+            Defines the client-side SignalR methods, callable by the server.
+            </summary>
+        </member>
+        <member name="T:MaintCliNS.MaintCli">
+            <summary>
+            Provides a command-line interface to an application via HTTP.
+            </summary>
+            <summary>
+            Provides a command-line interface to an application via HTTP.
+            </summary>
+            <summary>
+            Provides a command-line interface to an application via HTTP.
+            </summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.SendAllSettingsTo(MaintCliNS.IClientRpc)">
+            <summary>
+            This method is called once upon connection, to send all of the settings to the client.
+            </summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.EnableTimeStamps">
+            <summary>Displays a timestamp in front of each command in the client's command history.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.MessagesToRetain">
+            <summary>The number of messages to retain in the client's command history.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.Color">
+            <summary>The color of the text displayed on the CLI.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.BackgroundColor">
+            <summary>The background color of the CLI.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.BackgroundGradientColors">
+            <summary>The background of the CLI as a list of gradient colors.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.BackgroundGradientDirection">
+            <summary>The direction, in degrees, of the background gradient of the CLI (if one is specified.)</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.BackgroundImageUrl">
+            <summary>A URL to display as the background image of the CLI.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.BackgroundImageFile">
+            <summary>The path of a local (to the application) image to display as the background image of the CLI.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.BackgroundRepeat">
+            <summary>Tiles the specified image across the CLI.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.BackgroundStretch">
+            <summary>Stretches the specified image across the CLI.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.FontSize">
+            <summary>The font size of the CLI text..</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.FontFamilies">
+            <summary>A list of the desired font families for the CLI text, in order of preference.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.TextShadowColor">
+            <summary>Sets the color of the drop shadow for the CLI text.</summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.AddCommand(MaintCliNS.Command)">
+            <summary>Adds a new command to the CLI.</summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.ListCommands">
+            <summary>
+            Returns a formatted string that lists the available commands.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.Default">
+            <summary>A default, static instance of MaintCli that can be used for convenience.</summary>
+        </member>
+        <member name="T:MaintCliNS.MaintCli.LogHandler">
+            <summary>Delegate type used for receiving MaintCli log messages.</summary>
+            <param name="logLevel">The log level for this event.</param>
+            <param name="logMessage">The log message.</param>
+        </member>
+        <member name="E:MaintCliNS.MaintCli.OnLog">
+            <summary>Event that fires when MaintCli logs information internally.</summary>
+        </member>
+        <member name="T:MaintCliNS.MaintCli.AuthHandler">
+            <summary>Delegate type used for authenticating a new connection.</summary>
+            <param name="username">The given username.</param>
+            <param name="password">The given password.</param>
+            <returns>True if the credentials pass authentication, allowing the client to run commands.</returns>
+        </member>
+        <member name="E:MaintCliNS.MaintCli.OnAuthenticate">
+            <summary>Event that fires when a connected client requests authentication. If authentication is required, then this event must be handled, and authentication implemented.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.HttpEndPoint">
+            <summary>The HTTP endpoint that the CLI is listening on.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.HttpsEndPoint">
+            <summary>The HTTPS endpoint that the CLI is listening on.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.HttpsRedirection">
+            <summary>If true, redirects incoming HTTP connections to the HTTPS end point.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.Certificate">
+            <summary>The certificate that is used to autheticate the server.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.RequireAuthentication">
+            <summary>If true, requires that all clients send in credentials to be authenticated before issuing commands.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.Asynchronous">
+            <summary>True if incoming commands are to be executed asynchronously on threadpool threads.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.MaxConcurrentCommands">
+            <summary>The number of received commands that can be executed simultaneously.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.MaxConcurrentMessages">
+            <summary>The number of messages that can be sent to all users simultaneously.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.InactivityTimeout">
+            <summary>The time to wait before closing a client connection due to inactivity by the client.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCli.SessionTimeout">
+            <summary>Any client will be disconnected after this period of time, regardless of activity.</summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.#ctor">
+            <summary>Creates a new instance of MaintCli.</summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.Start(System.Net.IPEndPoint,System.Net.IPEndPoint,System.Boolean,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Boolean,System.Boolean,System.Int32,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan})">
+            <summary>Starts the MaintCli server.</summary>
+            <param name="httpEndPoint">The HTTP endpoint that the CLI will listen on.</param>
+            <param name="httpsEndPoint">The HTTPS endpoint that the CLI will listen on.</param>
+            <param name="httpsRedirection">If true, redirects incoming HTTP connections to the HTTPS end point.</param>
+            <param name="certificate">The certificate that is used to autheticate the server.</param>
+            <param name="requireAuthentication">If true, requires that all clients send in credentials to be authenticated before issuing commands.</param>
+            <param name="asynchronous">True if incoming commands are to be executed asynchronously on threadpool threads. If false, the user must call HandleCommands() periodically to execute incoming commands.</param>
+            <param name="maxConcurrentCommands">The number of received commands that can be executed simultaneously, or with each call to HandleCommands() (if asynchronous.) When exceeded, commands will be dropped.</param>
+            <param name="inactivityTimeout">The time to wait before closing a client connection due to inactivity by the client. Default: 10 minutes.</param>
+            <param name="sessionTimeout">Any client will be disconnected after this period of time, regardless of activity. Default: 1 month.</param>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.SendMessage(System.String,MaintCliNS.SendOptions)">
+            <summary>Sends the given message to all connected and authenticated clients.</summary>
+            <param name="message">The message to display.</param>
+            <param name="sendOptions">Send options.</param>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.SendMessageTo(MaintCliNS.Client,System.String,MaintCliNS.SendOptions)">
+            <summary>Sends the given message to all connected and authenticated clients.</summary>
+            <param name="client">The client to send the message to.</param>
+            <param name="message">The message to display.</param>
+            <param name="sendOptions">Send options.</param>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.HandleCommands">
+            <summary>When Asynchronous=false, causes pending client commands to execute on the current thread, blocking until they have finished.</summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.DisconnectClient(System.String)">
+            <summary>Instructs MaintCli to disconnect from a connected client.</summary>
+            <param name="username">The username of the client.</param>
+        </member>
+        <member name="M:MaintCliNS.MaintCli.DisconnectClient(MaintCliNS.Client)">
+            <summary>Instructs MaintCli to disconnect from a connected client.</summary>
+            <param name="client">The client.</param>
+        </member>
+        <member name="T:MaintCliNS.MaintCliHub">
+            <summary>
+            The SignalR hub used for reception of client messages.
+            </summary>
+        </member>
+        <member name="T:MaintCliNS.MaintCliLogger">
+            <summary>
+            An ILogger implementation that logs to MaintCli.
+            </summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLogger.#ctor(MaintCliNS.MaintCli,System.String,MaintCliNS.MaintCliLoggerConfiguration)">
+            <summary>Instantiates a new MaintCliLogger.</summary>
+            <param name="maintCli">An existing MaintCli instance.</param>
+            <param name="name">The name of the logger.</param>
+            <param name="config">The logger configuration.</param>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLogger.BeginScope``1(``0)">
+            <summary>Currently a no-op.</summary>
+            <typeparam name="TState"></typeparam>
+            <param name="state"></param>
+            <returns></returns>        
+        </member>
+        <member name="M:MaintCliNS.MaintCliLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel)">
+            <summary>Returns if this logger is enabled for the given log level.</summary>
+            <param name="logLevel">The log level.</param>
+            <returns>True if enabled.</returns>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLogger.Log``1(Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,``0,System.Exception,System.Func{``0,System.Exception,System.String})">
+            <summary>Writes a log entry to the CLI.</summary>
+            <typeparam name="TState">The state type.</typeparam>
+            <param name="logLevel">The log level of the event.</param>
+            <param name="eventId">The event ID.</param>
+            <param name="state">The state.</param>
+            <param name="exception">The exception, if any.</param>
+            <param name="formatter">The formatter used to create the text for display.</param>
+        </member>
+        <member name="T:MaintCliNS.MaintCliLoggerConfiguration">
+            <summary>
+            Configuration input for the MaintCliLogger.
+            </summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCliLoggerConfiguration.EventId">
+            <summary>Used to match with only the event IDs of the events you want to log. Use '0' to match all event IDs.</summary>
+        </member>
+        <member name="P:MaintCliNS.MaintCliLoggerConfiguration.LogLevel">
+            <summary>The minimum log level of events to log.</summary>
+        </member>
+        <member name="T:MaintCliNS.MaintCliLoggerExtensions">
+            <summary>
+            Extensions that provide easy ways to add the logger to an application.
+            </summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLoggerExtensions.AddMaintCliLogger(Microsoft.Extensions.Logging.ILoggingBuilder,MaintCliNS.MaintCli)">
+            <summary>Adds MaintCli as a logger to a LoggingBuilder.</summary>
+            <param name="builder">The logging builder.</param>
+            <param name="maintCliInst">An instance of MaintCli. If not provided, the default static MaintCli.Default will be used.</param>
+            <returns>The same logging builder.</returns>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLoggerExtensions.AddMaintCliLogger(Microsoft.Extensions.Logging.ILoggingBuilder,System.Action{MaintCliNS.MaintCliLoggerConfiguration},MaintCliNS.MaintCli)">
+            <summary>Adds MaintCli as a logger to a LoggingBuilder.</summary>
+            <param name="builder">The logging builder.</param>
+            <param name="configure">Action that will provide the logger configuration.</param>
+            <param name="maintCliInst">An instance of MaintCli. If not provided, the default static MaintCli.Default will be used.</param>
+            <returns>The same logging builder.</returns>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLoggerExtensions.AddMaintCliLogger(Microsoft.Extensions.Logging.ILoggingBuilder,MaintCliNS.MaintCliLoggerConfiguration,MaintCliNS.MaintCli)">
+            <summary>Adds MaintCli as a logger to a LoggingBuilder.</summary>
+            <param name="builder">The logging builder.</param>
+            <param name="config">The logger configuration.</param>
+            <param name="maintCliInst">An instance of MaintCli. If not provided, the default static MaintCli.Default will be used.</param>
+            <returns>The same logging builder.</returns>
+        </member>
+        <member name="T:MaintCliNS.MaintCliLoggerProvider">
+            <summary>
+            Logger provider for MaintCliLogger.
+            </summary>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLoggerProvider.#ctor(MaintCliNS.MaintCli,MaintCliNS.MaintCliLoggerConfiguration)">
+            <summary>Creates a new instance of MaintCliLoggerProvider.</summary>
+            <param name="maintCli">An instance of MaintCli.</param>
+            <param name="config">Configuration for the logger.</param>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLoggerProvider.CreateLogger(System.String)">
+            <summary>Creates an instance of the logger.</summary>
+            <param name="categoryName">Category to use for this logger.</param>
+            <returns>A new MaintCliLogger instance.</returns>
+        </member>
+        <member name="M:MaintCliNS.MaintCliLoggerProvider.Dispose">
+            <summary></summary>
+        </member>
+        <member name="M:MaintCliNS.ResourceUtility.GetTextResource(System.String)">
+            <summary>Gets an embedded resource from the currently executing assembly, and returns it as string.</summary>
+            <param name="resourceName">The resource name.</param>
+            <returns>The resource as text.</returns>
+        </member>
+        <member name="T:MaintCliNS.SendOptions">
+            <summary>
+            Options for handling a sent message to the client's CLI.
+            </summary>
+        </member>
+        <member name="F:MaintCliNS.SendOptions.None">
+            <summary></summary>
+        </member>
+        <member name="F:MaintCliNS.SendOptions.AllowHtml">
+            <summary>Instructs the CLI to not escape any HTML characters prior to display.</summary>
+        </member>
+    </members>
+</doc>

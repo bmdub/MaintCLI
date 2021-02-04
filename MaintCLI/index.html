@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<style>
+
+		html, body {
+			margin: 0;
+			padding: 0;
+			min-height: 100%;
+		}
+
+		body {
+			background-attachment: fixed;
+			background-position: left bottom;
+
+			/* Defaults */
+			color: lightgray;
+			background-color: black;
+			font-family: 'Consolas', 'Monaco', monospace;
+			font-size: 10pt;
+		}
+
+		input {
+			/* Defaults */
+			color: lightgray;
+			background-color: black;
+			font-family: 'Consolas', 'Monaco', monospace;
+			font-size: 10pt;
+		}
+
+		.cliWindow {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+		}
+
+		.history {
+			width: 100%;
+		}
+
+		.command {
+			width: 100%;
+			border: none;
+			outline: none;
+			padding: 0px;
+		}
+
+		.commandCell {
+			width: 100%;
+			padding: 0px;
+		}
+
+		.prompt {
+			padding: 0px;
+		}
+
+		table, tr, td {
+			padding: 0px;
+			border-spacing: 0px;
+		}
+
+		/* Scrollbar */
+
+		/* Works on Chrome, Edge, and Safari */
+		*::-webkit-scrollbar {
+			width: auto;
+		}
+
+		*::-webkit-scrollbar-track {
+			background-color: #000000;
+		}
+
+		*::-webkit-scrollbar-thumb {
+			background-color: #333333;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="cliWindow">
+
+		<div class="history">
+		</div>
+
+		<table>
+			<tr>
+				<td>
+					<div class="prompt">
+						&gt;
+					</div>
+				</td>
+				<td class="commandCell">
+					<input class="command" spellcheck="false" autocapitalize="off" />
+				</td>
+			</tr>
+		</table>
+
+	</div>
+
+	<!-- Below is a magic comment that will be replaced later by our javascript scripts, which are otherwise embedded in the library assembly. -->
+	<!--SCRIPT-->
+
+</body>
+</html>

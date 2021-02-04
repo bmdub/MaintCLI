@@ -9,8 +9,6 @@ const authRequired = __REQUIRE_AUTHENTICATION;
 // We want to keep track of the authentication state for the handshake.
 const AuthStateEnum = Object.freeze({ "default": 1, "promptingForUsername": 2, "promptingForPassword": 3, "authenticated": 4 })
 let authState = AuthStateEnum.default;
-//if (authRequired === false)
-//	authState = AuthStateEnum.authenticated;
 
 // Define some client-side settings defaults.
 let enableTimeStamps = false;
@@ -350,6 +348,9 @@ function ConnectToServer() {
 			connection.invoke("BeginAuthentication").catch(function (err) {
 				AddToHistory(err.toString());
 			});
+		}
+		else {
+			authState = AuthStateEnum.authenticated;
 		}
 	}).catch(function (err) {
 		connecting = false;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net;
@@ -16,123 +17,124 @@ namespace SimpleTest
 	{
 		static void Main(string[] args)
 		{
-			var echo = new CommandBuilder("echo", "repeats what you typed", "echo \"what up\"")
-				.AddArgument("string", "the string, surrounded by quotes, to echo")
-				.AddOption("s", true, "appends a sender name.")
-				.AddOption("b", false, "appends exclamation.")
+			// Start the CLI.
+			// Note: You are free to add commands, change settings, and subscribe to events before or after this call, at any point in the application.
+			MaintCli.Default.Start(
+				httpEndPoint: new IPEndPoint(IPAddress.Any, 5000), 
+				httpsEndPoint: new IPEndPoint(IPAddress.Any, 5001), 
+				//certificate: ...
+				httpsRedirection: true,
+				requireAuthentication: true, 
+				asynchronous: true, 
+				maxConcurrentCommands: 2,
+				inactivityTimeout: TimeSpan.FromMinutes(10)
+				);
+
+			// Authenticate credentials here
+			MaintCli.Default.OnAuthenticate += (string username, string password) =>
+			{
+				if (username == "username123" && password == "password123")
+					return Task.FromResult(true);
+
+				return Task.FromResult(false);
+			};
+
+			// Display a message to the user on connection. Note: Sent messages at this point will only appear if authentication is not required.
+			MaintCli.Default.OnConnected += (Client client) =>
+				MaintCli.Default.SendMessageTo(client, "You connected to my app... Congrats!");
+
+			// Display a message to the user on authentication.
+			MaintCli.Default.OnAuthenticated += (Client client) =>
+				MaintCli.Default.SendMessageTo(client, "You are now authenticated. Unauthorized activity is prohibited.");
+
+			// Optionally view MaintCli's internal logs for debugging.
+			//MaintCli.Default.OnLog += (LogLevel logLevel, string logMessage) =>
+				//Console.WriteLine($"{logLevel}: {logMessage}");
+
+			// Create an 'echo' command.
+			MaintCli.Default.AddCommand(
+				new CommandBuilder("echo", "echos the argument you specify", "echo \"hello wrold\"")
+				.AddArgument("text", "the string, surrounded by quotes, to echo")
+				.AddOption("r", true, "repeats the echo N times")
+				.AddOption("c", false, "capitalizes the string")
 				.Execute((sender, args) =>
 				{
-					//Thread.Sleep(1000);
-
 					var builder = new StringBuilder();
 
-					builder.Append(args["string"]);
-					if (args.Contains("B"))
-						builder.Append("!");
-					if (args.TryGetValue("s", out var theSender))
-						builder.Append($" -{theSender}");
-					//builder.AppendLine();
+					int repeatCount = 0;
+					if (args.TryGetValue("r", out var countStr))
+						repeatCount = int.Parse(countStr);
+
+					for (int i = 0; i < repeatCount; i++)
+					{
+						var text = args["text"];
+
+						if (args.Contains("c"))
+							text = text.ToUpper();
+
+						builder.AppendLine(text);
+					}
 
 					MaintCli.Default.SendMessageTo(sender, builder.ToString());
 				})
-				.Build();
+				.Build());
 
-			MaintCli.Default.AddCommand(echo);
-
-			//Console.WriteLine(MaintCli.ListCommands());
-
-			//Console.WriteLine(command.ToString());
-
-			//MaintCli.RunCommand(@"echo -b ""whats up"" --s=""it's me""");
-
-			//Console.ReadKey();
-
-			MaintCli.Default.OnLog += (LogLevel logLevel, string logMessage) =>
-			{
-				Console.WriteLine($"{logLevel}: {logMessage}");
-			};
-
-
-
-			OpenBrowser("http://localhost:5000");
-
-			// 5000 redirects to 5001 for https upgrade
-			MaintCli.Default.Start(httpEndPoint: new IPEndPoint(IPAddress.Any, 5000), httpsEndPoint: new IPEndPoint(IPAddress.Any, 5001), requireAuthentication: true, asynchronous: true, inactivityTimeout: TimeSpan.FromMinutes(1), sessionTimeout: TimeSpan.FromMinutes(2));
-
-			MaintCli.Default.OnAuthenticate += (string username, string password) =>
-			{
-				return Task.FromResult(true);
-			};
-
-			MaintCli.Default.EnableTimeStamps = true;
-
-			//MaintCli.MessagesToRetain = 10;
-
-			//MaintCli.Color = Color.Green;
-
-			//MaintCli.TextShadowColor = Color.Orange;
-
-			//MaintCli.BackgroundColor = Color.White;
-			//MaintCli.BackgroundColor = System.Drawing.Color.FromArgb(200, rand.Next(0, 256), rand.Next(0, 256), rand.Next(0, 256));
-
-			//MaintCli.BackgroundRepeat = true;
-
-			//MaintCli.BackgroundStretch = true;
-
-			//MaintCli.FontSize = 30;
-
-			//MaintCli.FontFamilies = ImmutableList<string>.Empty.Add("Courier New");
-
-			//MaintCli.Default.BackgroundImageFile = @"C:\Users\bwoeg\Downloads\asdffff.gif";
-
-			//MaintCli.Default.BackgroundImageUrl = $"https://cataas.com/cat?{DateTime.Now.ToString()}";
-
+			// Uncomment any of these client settings to try them out.
+			//MaintCli.Default.EnableTimeStamps = true;
+			//MaintCli.Default.MessagesToRetain = 10_000;
+			//MaintCli.Default.FontSize = 30;
+			//MaintCli.Default.FontFamilies = ImmutableList<string>.Empty.Add("Wingdings").Add("Monaco");
+			//MaintCli.Default.Color = Color.GreenYellow;
+			//MaintCli.Default.TextShadowColor = Color.OrangeRed;
+			//MaintCli.Default.BackgroundColor = Color.FromArgb(255, 50, 0, 0);
+			//MaintCli.Default.BackgroundGradientColors = ImmutableList<Color>.Empty.Add(Color.FromArgb(255, 0, 0, 0)).Add(Color.FromArgb(255, 40, 0, 0));
+			//MaintCli.Default.BackgroundGradientDirection = 315;
+			//MaintCli.Default.BackgroundImageFile = @"C:\memes\thatonewiththecatlol.gif";
+			//MaintCli.Default.BackgroundImageUrl = $"https://cataas.com/cat?nocachetrick={DateTime.UtcNow}";
 			//MaintCli.Default.BackgroundRepeat = true;
+			//MaintCli.Default.BackgroundStretch = true;
 
-			var host = Host.CreateDefaultBuilder(args)
-				.ConfigureLogging(builder =>
-					builder
+			// To add MaintCli as a logger to a web/host (or something else with a LoggingBuilder)
+			var myHost = Host.CreateDefaultBuilder(args)
+				.ConfigureLogging(builder => builder
 					.ClearProviders()
 					.SetMinimumLevel(LogLevel.Trace)
-					/*.AddProvider(
-						new MaintCliLoggerProvider(
-							new MaintCliLoggerConfiguration
-							{
-								LogLevel = LogLevel.Error,
-							}))
-					.AddMaintCliLogger()*/					
 					.AddMaintCliLogger(configuration =>
 					{
 						configuration.LogLevel = LogLevel.Trace;
 					}))
 					.Build();
-			var logger = (ILogger<Program>)host.Services.GetService(typeof(ILogger<Program>));
 
+			// To manually create a logger for general applications
+			var provider = new MaintCliLoggerProvider(new MaintCliLoggerConfiguration() { LogLevel = LogLevel.Trace });
+			var logger = provider.CreateLogger(nameof(Program));
 
-			for (; ; )
+			// Test our logger
+			MaintCli.Default.OnConnected += (Client client) =>
 			{
-				break;
-				Thread.Sleep(1000);
-
-				//MaintCli.HandleCommands();
-
 				logger.LogCritical("Critical");
 				logger.LogError("Error");
 				logger.LogWarning("Warning");
 				logger.LogInformation("Information");
 				logger.LogDebug("Debug");
 				logger.LogTrace("Trace");
+			};
 
-				//MaintCliNS.MaintCli.SendMessage("test");
+			// Open a web browser to our app for convenience
+			if (Debugger.IsAttached)
+				OpenBrowserTo("http://localhost:5000");
 
-				//MaintCli.Default.Disconnect("asdf");
+			Console.WriteLine("Enter text to send to connected clients:");
+			for(; ;)
+			{
+				var line = Console.ReadLine();
+
+				// Send a message to all connected clients
+				MaintCli.Default.SendMessage(line);
 			}
-
-			Console.WriteLine("Done.");
-			Console.ReadKey();
 		}
 
-		private static void OpenBrowser(string url)
+		static void OpenBrowserTo(string url)
 		{
 			url = url.Replace("*", "localhost");
 
@@ -144,8 +146,4 @@ namespace SimpleTest
 				Process.Start("open", url);
 		}
 	}
-
-
-
-
 }

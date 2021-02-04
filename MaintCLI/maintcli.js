@@ -47,6 +47,12 @@ function PadMessageHistory() {
 }
 PadMessageHistory();
 
+// For placing the cursor in the command box, at the end of the text.
+function FocusOnCommand() {
+	command.focus();
+	command.setSelectionRange(command.value.length, command.value.length);
+}
+
 // On mouse click anywhere on the page, ensure the command input box remains focused.
 document.body.addEventListener('mouseup', function (e) {
 
@@ -54,14 +60,14 @@ document.body.addEventListener('mouseup', function (e) {
 	if (document.getSelection().toString() !== "")
 		return;
 
-	command.focus();
+	FocusOnCommand();
 });
 
 // Wires up the command box events
 function ListenToCommandEvents() {
 
 	// Handles Enter/Return press on the command input box.
-	command.addEventListener('keydown', function (e) {
+	command.addEventListener('keyup', function (e) {
 
 		// If we are not currently connected, then ignore the command and try to reconnect.
 		if (!connected && !connecting) {
@@ -131,8 +137,10 @@ function ListenToCommandEvents() {
 				if (commandHistoryIndex > 0)
 					commandHistoryIndex--;
 
-				if (commandHistoryIndex < commandHistory.length)
+				if (commandHistoryIndex < commandHistory.length) 
 					command.value = commandHistory[commandHistoryIndex];
+
+				FocusOnCommand();
 			}
 			else if (e.key === "ArrowDown") {
 
@@ -144,6 +152,8 @@ function ListenToCommandEvents() {
 					command.value = "";
 				else
 					command.value = commandHistory[commandHistoryIndex];
+
+				FocusOnCommand();
 			}
 		}
 

@@ -272,7 +272,7 @@ namespace MaintCliNS
 		}
 
 		IEnumerable<string> GetUnauthedConnectionIDs() =>
-			_clientCache.Clients.Where(client => client.Authenticated).Select(client => client.ConnectionID);
+			_clientCache.Clients.Where(client => !client.Authenticated).Select(client => client.ConnectionID);
 
 		IClientRpc GetAuthenticatedClientRpcInterfaces()
 		{

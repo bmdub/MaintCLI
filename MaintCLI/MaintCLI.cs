@@ -89,11 +89,11 @@ namespace MaintCliNS
 		}
 
 		/// <summary>Starts the MaintCli server.</summary>
-		/// <param name="httpEndPoint">The HTTP endpoint that the CLI will listen on.</param>
-		/// <param name="httpsEndPoint">The HTTPS endpoint that the CLI will listen on.</param>
+		/// <param name="httpEndPoint">The HTTP endpoint that the CLI will listen on. If null, only the HTTPS endpoint will be used.</param>
+		/// <param name="httpsEndPoint">The (optional) HTTPS endpoint that the CLI will listen on. If null, only the HTTP endpoint will be used.</param>
 		/// <param name="httpsRedirection">If true, redirects incoming HTTP connections to the HTTPS end point.</param>
-		/// <param name="certificate">The certificate that is used to autheticate the server.</param>
-		/// <param name="requireAuthentication">If true, requires that all clients send in credentials to be authenticated before issuing commands.</param>
+		/// <param name="certificate">The certificate that is used to authenticate the server over HTTPS. If null, an untrusted SSL cert will be generated locally (see the 'dotnet dev-certs' command for more information).</param>
+		/// <param name="requireAuthentication"><em>NOTE: Authentication is NOT secure when using an HTTP end point.</em> If true, requires that clients authenticate with credentials. Authentication must be handled by subscribing to the OnAuthenticate event.</param>
 		/// <param name="asynchronous">True if incoming commands are to be executed asynchronously on threadpool threads. If false, the user must call HandleCommands() periodically to execute incoming commands.</param>
 		/// <param name="maxConcurrentCommands">The number of received commands that can be executed simultaneously, or with each call to HandleCommands() (if asynchronous.) When exceeded, commands will be dropped.</param>
 		/// <param name="inactivityTimeout">The time to wait before closing a client connection due to inactivity by the client. Default: 10 minutes.</param>
@@ -123,6 +123,9 @@ namespace MaintCliNS
 				InactivityTimeout = inactivityTimeout == null ? TimeSpan.FromMinutes(10) : inactivityTimeout.Value;
 				SessionTimeout = sessionTimeout == null ? TimeSpan.FromDays(30) : sessionTimeout.Value;
 				HttpsRedirection = httpsRedirection;
+
+				if (HttpEndPoint == null && HttpsEndPoint == null)
+					throw new ArgumentNullException($"At least one of 'httpEndPoint' or 'httpsEndPoint' must not be null.");
 
 				_clientCache = new ClientCache(InactivityTimeout, SessionTimeout);
 

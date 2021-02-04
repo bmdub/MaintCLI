@@ -11,7 +11,13 @@ Presents a command-line interface to your app that is accessible via a web-brows
 * Supports HTTPS and basic authentication.
 * Usable within any C# application type. No need for IIS, etc.
 
-### Usage Example
+### Installation
+Install the package _MaintCLI_ from Nuget.org. Or, from the package manager console:
+```
+PM> Install-Package MaintCLI
+```
+
+### Usage
 
 To publish the interface, you can call _Start()_ on the default static instance:
 ```CSharp

@@ -20,11 +20,11 @@ namespace MaintCliNS
 		{
 			await base.OnConnectedAsync();
 
-			// Keep track of who is connected
-			_maintCli.RegisterConnection(Context.ConnectionId);
-
 			// Send the client settings over
 			_maintCli.SendAllSettingsTo(Clients.Caller);
+
+			// Keep track of who is connected
+			_maintCli.RegisterConnection(Context.ConnectionId);
 		}
 
 		public override async Task OnDisconnectedAsync(Exception exception)

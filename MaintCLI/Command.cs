@@ -62,7 +62,7 @@ namespace MaintCliNS
 				{
 					builder.Append($"\t\t-{option.Parameter.Name}");
 					if (option.HasArgument)
-						builder.Append($" <string>");
+						builder.Append($" <argument>");
 					if (option.Parameter.Help != null)
 						builder.Append($" - {option.Parameter.Help}");
 					builder.AppendLine();

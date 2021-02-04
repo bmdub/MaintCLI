@@ -65,7 +65,7 @@ namespace SimpleTest
 					if (args.TryGetValue("r", out var countStr))
 						repeatCount = int.Parse(countStr);
 
-					for (int i = 0; i < repeatCount; i++)
+					for (int i = 0; i <= repeatCount; i++)
 					{
 						var text = args["text"];
 

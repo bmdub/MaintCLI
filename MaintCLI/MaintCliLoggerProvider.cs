@@ -22,6 +22,14 @@ namespace MaintCliNS
             _config = config;
         }
 
+        /// <summary>Creates a new instance of MaintCliLoggerProvider using the default MaintCli instance.</summary>
+        /// <param name="config">Configuration for the logger.</param>
+        public MaintCliLoggerProvider(MaintCliLoggerConfiguration config)
+        {
+            _maintCli = MaintCli.Default;
+            _config = config;
+        }
+
         /// <summary>Creates an instance of the logger.</summary>
         /// <param name="categoryName">Category to use for this logger.</param>
         /// <returns>A new MaintCliLogger instance.</returns>

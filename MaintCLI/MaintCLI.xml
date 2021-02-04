@@ -361,6 +361,10 @@
             <param name="maintCli">An instance of MaintCli.</param>
             <param name="config">Configuration for the logger.</param>
         </member>
+        <member name="M:MaintCliNS.MaintCliLoggerProvider.#ctor(MaintCliNS.MaintCliLoggerConfiguration)">
+            <summary>Creates a new instance of MaintCliLoggerProvider using the default MaintCli instance.</summary>
+            <param name="config">Configuration for the logger.</param>
+        </member>
         <member name="M:MaintCliNS.MaintCliLoggerProvider.CreateLogger(System.String)">
             <summary>Creates an instance of the logger.</summary>
             <param name="categoryName">Category to use for this logger.</param>

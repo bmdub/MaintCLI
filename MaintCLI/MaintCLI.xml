@@ -212,6 +212,16 @@
         <member name="E:MaintCliNS.MaintCli.OnAuthenticate">
             <summary>Event that fires when a connected client requests authentication. If authentication is required, then this event must be handled, and authentication implemented.</summary>
         </member>
+        <member name="T:MaintCliNS.MaintCli.ConnectHandler">
+            <summary>Delegate type used for receiving client connect/authenticated notifications.</summary>
+            <param name="client">The client object, which can be used for sending messages to.</param>
+        </member>
+        <member name="E:MaintCliNS.MaintCli.OnConnected">
+            <summary>Event that fires once a client successfully establishes a connection.</summary>
+        </member>
+        <member name="E:MaintCliNS.MaintCli.OnAuthenticated">
+            <summary>Event that fires once a client is successfully authenticated.</summary>
+        </member>
         <member name="P:MaintCliNS.MaintCli.HttpEndPoint">
             <summary>The HTTP endpoint that the CLI is listening on.</summary>
         </member>

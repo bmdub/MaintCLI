@@ -41,6 +41,14 @@ namespace MaintCliNS
 		/// <summary>Event that fires when a connected client requests authentication. If authentication is required, then this event must be handled, and authentication implemented.</summary>
 		public event AuthHandler OnAuthenticate;
 
+		/// <summary>Delegate type used for receiving client connect/authenticated notifications.</summary>
+		/// <param name="client">The client object, which can be used for sending messages to.</param>
+		public delegate void ConnectHandler(Client client);
+		/// <summary>Event that fires once a client successfully establishes a connection.</summary>
+		public event ConnectHandler OnConnected;
+		/// <summary>Event that fires once a client is successfully authenticated.</summary>
+		public event ConnectHandler OnAuthenticated;
+
 		/// <summary>The HTTP endpoint that the CLI is listening on.</summary>
 		public IPEndPoint HttpEndPoint { get; private set; }
 		/// <summary>The HTTPS endpoint that the CLI is listening on.</summary>
@@ -399,8 +407,14 @@ namespace MaintCliNS
 			return await OnAuthenticate.Invoke(username, password);
 		}
 
-		internal void MarkConnectionAsAuthenticated(string connectionId, string username) =>
+		internal void MarkConnectionAsAuthenticated(string connectionId, string username)
+		{
 			_clientCache.MarkAsAuthenticated(connectionId, username);
+
+			// Fire the OnAuthenticated event if the user is interested.
+			if (_clientCache.TryGetClient(connectionId, out var client))
+				OnAuthenticated?.Invoke(client);
+		}
 
 		internal bool ConnectionIsAuthenticated(string connectionId)
 		{
@@ -423,6 +437,10 @@ namespace MaintCliNS
 		{
 			// Register the connection for the purposes of keeping track of the session.
 			_clientCache.Add(connectionId);
+
+			// Fire the OnConnected event if the user is interested.
+			if (_clientCache.TryGetClient(connectionId, out var client))
+				OnConnected?.Invoke(client);
 		}
 
 		internal void DeregisterConnection(string connectionId)

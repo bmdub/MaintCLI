@@ -1,6 +1,8 @@
 # MaintCLI
 Presents a command-line interface to your app that is accessible via a web-browser.
 
+![Preview](preview.png)
+
 ### Features:
 * Define commands in the application, and handle them a/synchronously.
 * Send asynchronous messages to connected clients.
@@ -28,5 +30,5 @@ MaintCli.Default.AddCommand(
 	})
 	.Build());
 ``` 
-See [SimpleTest](https://github.com/bmdub/MaintCLI/blob/master/SimpleTest/Program.cs) for a more feature-complete example.
+See [SimpleTest](/SimpleTest/Program.cs) for a more feature-complete example.
 <br/>
